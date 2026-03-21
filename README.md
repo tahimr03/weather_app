@@ -172,7 +172,7 @@ https://www.weatherapi.com/ (using api key)
 
 1. Clone repository
 2. Navigate to project and install dependencies (npm install)
-3. Create API key and replace
+3. Create API key and replace "ENTER YOUR API KEY HERE"
 4. Run development server (npm run dev)
 
 ## Notes

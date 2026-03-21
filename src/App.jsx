@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 function App() {
-  const apiKey = "f6c2b951943f466b89522212262103";
+  const apiKey = "ENTER YOUR API KEY HERE";
 
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
