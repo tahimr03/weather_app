@@ -1,16 +1,185 @@
-# React + Vite
+# Forecastly 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Forecastly is a React-based weather application that allows users to get weather information either by searching for their city, or by using a quick action get current location button
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+### Location Search
+- Users can type a city, region, or country into the input field (country will return it's capital city)
+- Dynamic suggestions appear as the user types
+- Suggestions are ranked based on relevance
+- Clicking a suggestion automatically fetches weather data
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Current Location
+- A "Use Current Location" button retrieves the user's GPS coordinates
+- Uses the browser Geolocation API
+- Displays weather for the user's exact location
 
-## Expanding the ESLint configuration
+### Weather Display
+- Current temperature (°C)
+- Weather condition with icon
+- Feels like temperature
+- Humidity
+- Wind speed
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 5-Day Forecast
+- Displays upcoming weather for 5 days
+- Includes:
+  - Day of the week
+  - Date
+  - Weather condition and icon
+  - High and low temperatures
+  - Chance of rain
+
+### Error Handling
+- Handles empty input
+- Displays message for invalid locations
+- Handles API failures
+- Handles denied or unavailable geolocation
+
+### Reset Functionality
+- Clears input field
+- Removes weather data
+- Resets suggestions and error messages
+- Returns app to initial state
+
+---
+
+## Tech Stack
+
+- React (Vite)
+- JavaScript (ES6+)
+- Tailwind CSS
+- WeatherAPI (https://www.weatherapi.com/)
+
+---
+
+## API Usage
+
+### Weather Data
+### Location Search
+- Users can type a city, region, or country into the input field
+- Dynamic suggestions appear as the user types
+- Suggestions are ranked based on relevance
+- Clicking a suggestion automatically fetches weather data
+
+### Current Location
+- A "Use Current Location" button retrieves the user's GPS coordinates
+- Uses the browser Geolocation API
+- Displays weather for the user's exact location
+
+### Weather Display
+- Current temperature (°C)
+- Weather condition with icon
+- Feels like temperature
+- Humidity
+- Wind speed
+
+### 5-Day Forecast
+- Displays upcoming weather for 5 days
+- Includes:
+  - Day of the week
+  - Date
+  - Weather condition and icon
+  - High and low temperatures
+  - Chance of rain
+
+### Error Handling
+- Handles empty input
+- Displays message for invalid locations
+- Handles API failures
+- Handles denied or unavailable geolocation
+
+### Reset Functionality
+- Clears input field
+- Removes weather data
+- Resets suggestions and error messages
+- Returns app to initial state
+
+---
+
+## Tech Stack
+
+- React (Vite)
+- JavaScript (ES6+)
+- Tailwind CSS
+- WeatherAPI (https://www.weatherapi.com/)
+
+---
+
+## API Usage
+
+### Weather Data
+### Location Search
+- Users can type a city, region, or country into the input field
+- Dynamic suggestions appear as the user types
+- Suggestions are ranked based on relevance
+- Clicking a suggestion automatically fetches weather data
+
+### Current Location
+- A "Use Current Location" button retrieves the user's GPS coordinates
+- Uses the browser Geolocation API
+- Displays weather for the user's exact location
+
+### Weather Display
+- Current temperature (°C)
+- Weather condition with icon
+- Feels like temperature
+- Humidity
+- Wind speed
+
+### 5-Day Forecast
+- Displays upcoming weather for 5 days
+- Includes:
+  - Day of the week
+  - Date
+  - Weather condition and icon
+  - High and low temperatures
+  - Chance of rain
+
+### Error Handling
+- Handles empty input
+- Displays message for invalid locations
+- Handles API failures
+- Handles denied or unavailable geolocation
+
+### Reset Functionality
+- Clears input field
+- Removes weather data
+- Resets suggestions and error messages
+- Returns app to initial state
+
+---
+
+## Tech Stack
+
+- React (Vite)
+- JavaScript (ES6+)
+- Tailwind CSS
+- WeatherAPI (https://www.weatherapi.com/)
+
+---
+
+## API Usage
+
+### Weather Data & Location Search
+https://www.weatherapi.com/ (using api key)
+
+
+## Setup Instructions
+
+1. Clone repository
+2. Navigate to project and install dependencies (npm install)
+3. Create API key and replace
+4. Run development server (npm run dev)
+
+## Notes
+
+- Uses real-time weather data (no static values)  
+- Requires internet connection  
+- Geolocation requires browser permission  
+- API key should not be exposed publicly  
+
+---
