@@ -1,63 +1,158 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
+  const apiKey = "f6c2b951943f466b89522212262103";
+
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const fetchWeather = async () => {
-    if (!city.trim()) {
-      setError("please enter a city");
-      setWeather(null);
+  const rankSuggestions = (results, searchText) => {
+    const search = searchText.trim().toLowerCase();
+
+    return results
+      .map((item) => {
+        const name = item.name?.toLowerCase() || "";
+        const region = item.region?.toLowerCase() || "";
+        const country = item.country?.toLowerCase() || "";
+
+        let priority = 999;
+
+        if (name.startsWith(search)) {
+          priority = 1;
+        } else if (region.startsWith(search)) {
+          priority = 2;
+        } else if (country.startsWith(search)) {
+          priority = 3;
+        } else if (name.includes(search)) {
+          priority = 4;
+        } else if (region.includes(search)) {
+          priority = 5;
+        } else if (country.includes(search)) {
+          priority = 6;
+        }
+
+        return { ...item, priority };
+      })
+      .filter((item) => item.priority !== 999)
+      .sort((a, b) => {
+        if (a.priority !== b.priority) {
+          return a.priority - b.priority;
+        }
+
+        return a.name.localeCompare(b.name);
+      });
+  };
+
+  const fetchSuggestions = async (searchText) => {
+    if (!searchText.trim() || searchText.length < 2) {
+      setSuggestions([]);
       return;
     }
 
-    const apiKey = "PASTE_YOUR_NEW_API_KEY_HERE";
+    try {
+      const res = await fetch(
+        `https://api.weatherapi.com/v1/search.json?key=${apiKey}&q=${searchText}`
+      );
+      const data = await res.json();
+
+      if (!Array.isArray(data)) {
+        setSuggestions([]);
+        return;
+      }
+
+      const ranked = rankSuggestions(data, searchText);
+      setSuggestions(ranked.slice(0, 8));
+    } catch (err) {
+      console.log(err);
+      setSuggestions([]);
+    }
+  };
+
+  const fetchWeather = async (selectedCity = city) => {
+    if (!selectedCity.trim()) {
+      setError("Please enter a city");
+      setWeather(null);
+      return;
+    }
 
     try {
       setLoading(true);
       setError("");
 
       const res = await fetch(
-        `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=5`
+        `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${selectedCity}&days=5`
       );
 
       const data = await res.json();
 
       if (data.error) {
-        setError("location not found");
+        setError("Location not found");
         setWeather(null);
         return;
       }
 
       setWeather(data);
+      setSuggestions([]);
     } catch (err) {
       console.log(err);
-      setError("api request failed");
+      setError("API request failed");
       setWeather(null);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchSuggestions(city);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [city]);
+
   return (
     <div className="min-h-screen bg-sky-500 flex flex-col items-center justify-center px-4">
       <header className="mb-8">
-        <h1 className="text-4xl font-bold text-black">Weather App</h1>
+        <h1 className="text-4xl font-bold text-white">Weather App</h1>
       </header>
 
-      <section className="w-full max-w-md bg-white p-6 rounded-2xl shadow-lg">
-        <input
-          type="text"
-          placeholder="Enter city name"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-800 outline-none focus:ring-2 focus:ring-sky-400"
-        />
+      <section className="w-full max-w-md bg-white p-6 rounded-2xl shadow-lg relative">
+        <div className="relative w-full">
+          {/* Input */}
+          <input
+            type="text"
+            placeholder="Enter city name"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-800 outline-none focus:ring-2 focus:ring-sky-400"
+          />
+
+          {/* Suggestions */}
+          {suggestions.length > 0 && (
+            <ul className="absolute left-0 right-0 top-full mt-2 max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg z-50">
+              {suggestions.map((item) => (
+                <li
+                  key={`${item.id}-${item.name}-${item.region}`}
+                  onClick={() => {
+                    const selected = `${item.name}, ${item.region}, ${item.country}`;
+                    setCity(selected);
+                    setSuggestions([]);
+                    fetchWeather(selected);
+                  }}
+                  className="cursor-pointer px-4 py-3 text-slate-700 hover:bg-sky-100"
+                >
+                  {item.name}, {item.region}, {item.country}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         <button
-          onClick={fetchWeather}
+          onClick={() => fetchWeather()}
           className="mt-4 w-full rounded-xl bg-sky-500 px-4 py-3 text-white font-semibold hover:bg-sky-600"
         >
           Get Weather
@@ -81,7 +176,9 @@ function App() {
               />
               <div>
                 <p className="text-3xl font-bold">{weather.current.temp_c}°C</p>
-                <p className="text-slate-700">{weather.current.condition.text}</p>
+                <p className="text-slate-700">
+                  {weather.current.condition.text}
+                </p>
               </div>
             </div>
 
