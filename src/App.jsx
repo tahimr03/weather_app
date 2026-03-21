@@ -105,6 +105,67 @@ function App() {
     }
   };
 
+  const fetchWeatherByCoords = async (lat, lon) => {
+    try {
+      setLoading(true);
+      setError("");
+      setSuggestions([]);
+
+      const res = await fetch(
+        `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${lat},${lon}&days=5`
+      );
+
+      const data = await res.json();
+
+      if (data.error) {
+        setError("Could not get weather for your location");
+        setWeather(null);
+        return;
+      }
+
+      setCity(
+        `${data.location.name}, ${data.location.region}, ${data.location.country}`
+      );
+      setWeather(data);
+    } catch (err) {
+      console.log(err);
+      setError("API request failed");
+      setWeather(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by this browser");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        fetchWeatherByCoords(lat, lon);
+      },
+      () => {
+        setLoading(false);
+        setError("Location access was denied or unavailable");
+      }
+    );
+  };
+
+  const handleReset = () => {
+    setCity("");
+    setWeather(null);
+    setSuggestions([]);
+    setError("");
+    setLoading(false);
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchSuggestions(city);
@@ -149,12 +210,21 @@ function App() {
           )}
         </div>
 
-        <button
-          onClick={() => fetchWeather()}
-          className="mt-4 w-full rounded-xl bg-sky-500 px-4 py-3 text-white font-semibold hover:bg-sky-600"
-        >
-          Get Weather
-        </button>
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+          <button
+            onClick={handleCurrentLocation}
+            className="w-full rounded-xl bg-sky-500 px-4 py-3 text-white font-semibold hover:bg-sky-600"
+          >
+            Use Current Location
+          </button>
+
+          <button
+            onClick={handleReset}
+            className="w-full rounded-xl bg-slate-500 px-4 py-3 text-white font-semibold hover:bg-slate-600"
+          >
+            Reset
+          </button>
+        </div>
 
         {loading && <p className="mt-4 text-slate-600">Loading...</p>}
 
